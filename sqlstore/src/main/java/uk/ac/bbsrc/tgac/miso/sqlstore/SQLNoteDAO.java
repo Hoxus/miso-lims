@@ -26,7 +26,7 @@ package uk.ac.bbsrc.tgac.miso.sqlstore;
 import com.eaglegenomics.simlims.core.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import uk.ac.bbsrc.tgac.miso.core.data.Kit;
+import uk.ac.bbsrc.tgac.miso.core.data.KitComponent;
 import uk.ac.bbsrc.tgac.miso.core.data.Library;
 import uk.ac.bbsrc.tgac.miso.core.data.Run;
 import uk.ac.bbsrc.tgac.miso.core.data.Sample;
@@ -42,9 +42,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.ProjectOverview;
-import uk.ac.bbsrc.tgac.miso.sqlstore.util.DbUtils;
 
-import javax.persistence.CascadeType;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -169,13 +167,13 @@ public class SQLNoteDAO implements NoteStore {
     return note.getNoteId();
   }
 
-  public long saveKitNote(Kit kit, Note note) throws IOException {
+  public long saveKitNote(KitComponent kitComponent, Note note) throws IOException {
     long noteId = save(note);
     SimpleJdbcInsert pInsert = new SimpleJdbcInsert(template)
             .withTableName("Kit_Note");
 
     MapSqlParameterSource poParams = new MapSqlParameterSource();
-    poParams.addValue("kit_kitId", kit.getId())
+    poParams.addValue("kit_kitId", kitComponent.getId())
             .addValue("notes_noteId", noteId);
     try {
       pInsert.execute(poParams);

@@ -138,7 +138,7 @@ public class SQLExperimentDAO implements ExperimentStore {
   private RunStore runDAO;
   private PoolStore poolDAO;
   private PlatformStore platformDAO;
-  private KitStore kitDAO;
+  private KitComponentStore kitComponentDAO;
   private Store<SecurityProfile> securityProfileDAO;
   private CascadeType cascadeType;
 
@@ -189,8 +189,8 @@ public class SQLExperimentDAO implements ExperimentStore {
     this.platformDAO = platformDAO;
   }
 
-  public void setKitDAO(KitStore kitDAO) {
-    this.kitDAO = kitDAO;
+  public void setKitComponentDAO(KitComponentStore kitComponentDAO) {
+    this.kitComponentDAO = kitComponentDAO;
   }
 
   public Store<SecurityProfile> getSecurityProfileDAO() {
@@ -378,9 +378,9 @@ public class SQLExperimentDAO implements ExperimentStore {
         }
       }
 
-      if (!experiment.getKits().isEmpty()) {
-        for (Kit k : experiment.getKits()) {
-          kitDAO.save(k);
+      if (!experiment.getKitComponents().isEmpty()) {
+        for (KitComponent k : experiment.getKitComponents()) {
+          kitComponentDAO.save(k);
 
           SimpleJdbcInsert kInsert = new SimpleJdbcInsert(template)
                                 .withTableName("Experiment_Kit");
@@ -545,7 +545,7 @@ public class SQLExperimentDAO implements ExperimentStore {
 
         if (!isLazy()) {
           e.setPool(poolDAO.getPoolByExperiment(e));
-          e.setKits(kitDAO.listByExperiment(rs.getLong("experimentId")));
+          e.setKitComponents(kitComponentDAO.listByExperiment(rs.getLong("experimentId")));
         }
       }
       catch (IOException e1) {

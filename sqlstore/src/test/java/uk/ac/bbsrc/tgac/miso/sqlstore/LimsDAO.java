@@ -209,21 +209,73 @@ public class LimsDAO extends LimsDAOTestCase {
   }
 
   @Test
-  public void testKits() {
+  public void testKitDescriptors() {
     try {
       // get row count of experiments in the dataset
-      int expected = getDataSet().getTable("Kit").getRowCount();
+      int expected = getDataSet().getTable("KitDescriptor").getRowCount();
 
       // get number of experiments from the DAO
-      int actual = getKitDAO().count();
+      int actual = getKitDescriptorDAO().count();
+
+      // test data contains 2 experiments, check size of returned list
+      TestCase.assertEquals("Wrong number of Kit Descriptors", expected, actual);
+
+      System.out.println(
+              "Expected number of Kit Descriptors: " + expected + ", actual: " + actual);
+
+      for (KitDescriptor d : random(getKitDescriptorDAO(), actual, 5)) {
+        TestCase.assertNotNull(d);
+        TestCase.assertNotNull(d.getId());
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      TestCase.fail();
+    }
+  }
+
+  @Test
+  public void testKitComponentDescriptors() {
+    try {
+      // get row count of experiments in the dataset
+      int expected = getDataSet().getTable("KitComponentDescriptor").getRowCount();
+
+      // get number of experiments from the DAO
+      int actual = getKitComponentDescriptorDAO().count();
+
+      // test data contains 2 experiments, check size of returned list
+      TestCase.assertEquals("Wrong number of Kit Component Descriptors", expected, actual);
+
+      System.out.println(
+              "Expected number of Kit Component Descriptors: " + expected + ", actual: " + actual);
+
+      for (KitComponentDescriptor d : random(getKitComponentDescriptorDAO(), actual, 5)) {
+        TestCase.assertNotNull(d);
+        TestCase.assertNotNull(d.getId());
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      TestCase.fail();
+    }
+  }
+
+  @Test
+  public void testKitComponents() {
+    try {
+      // get row count of experiments in the dataset
+      int expected = getDataSet().getTable("KitComponent").getRowCount();
+
+      // get number of experiments from the DAO
+      int actual = getKitComponentDAO().count();
 
       // test data contains 2 experiments, check size of returned list
       TestCase.assertEquals("Wrong number of kits", expected, actual);
 
       System.out.println(
-              "Expected number of kits: " + expected + ", actual: " + actual);
+              "Expected number of Kit Components: " + expected + ", actual: " + actual);
 
-      for (Kit d : random(getKitDAO(), actual, 5)) {
+      for (KitComponent d : random(getKitComponentDAO(), actual, 5)) {
         TestCase.assertNotNull(d);
         TestCase.assertNotNull(d.getId());
       }

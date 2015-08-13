@@ -70,7 +70,9 @@
         <entry key="uk.ac.bbsrc.tgac.miso.core.data.impl.LibraryDilution" value-ref="libraryDilutionStore"/>
         <entry key="uk.ac.bbsrc.tgac.miso.core.data.Experiment" value-ref="experimentStore"/>
         <entry key="uk.ac.bbsrc.tgac.miso.core.data.EntityGroup" value-ref="entityGroupStore"/>
-        <entry key="uk.ac.bbsrc.tgac.miso.core.data.Kit" value-ref="kitStore"/>
+        <entry key="uk.ac.bbsrc.tgac.miso.core.data.KitComponent" value-ref="kitComponentStore"/>
+        <entry key="uk.ac.bbsrc.tgac.miso.core.data.KitComponentDescriptor" value-ref="kitComponentDescriptorStore"/>
+        <entry key="uk.ac.bbsrc.tgac.miso.core.data.KitDescriptor" value-ref="kitDescriptorStore"/>
         <entry key="uk.ac.bbsrc.tgac.miso.core.data.Library" value-ref="libraryStore"/>
         <entry key="uk.ac.bbsrc.tgac.miso.core.data.LibraryQC" value-ref="libraryQcStore"/>
         <entry key="com.eaglegenomics.simlims.core.Note" value-ref="noteStore"/>
@@ -174,7 +176,7 @@
     <property name="runDAO" ref="sqlRunDAO"/>
     <property name="poolDAO" ref="sqlPoolDAO"/>
     <property name="platformDAO" ref="sqlPlatformDAO"/>
-    <property name="kitDAO" ref="sqlKitDAO"/>
+    <property name="kitComponentDAO" ref="sqlKitComponentDAO"/>
     <property name="securityProfileDAO" ref="sqlSecurityProfileDAO"/>
     <property name="jdbcTemplate" ref="interfaceTemplate"/>
   </bean>
@@ -357,11 +359,30 @@
     <property name="jdbcTemplate" ref="interfaceTemplate"/>
   </bean>
 
-  <bean id="sqlKitDAO"
-        class="uk.ac.bbsrc.tgac.miso.sqlstore.SQLKitDAO">
+  <bean id="sqlKitDescriptorDAO"
+        class="uk.ac.bbsrc.tgac.miso.sqlstore.SQLKitDescriptorDAO">
     <property name="cascadeType">
       <value type="javax.persistence.CascadeType">PERSIST</value>
     </property>
+    <property name="noteDAO" ref="sqlNoteDAO"/>
+    <property name="jdbcTemplate" ref="interfaceTemplate"/>
+  </bean>
+
+  <bean id="sqlKitComponentDescriptorDAO"
+        class="uk.ac.bbsrc.tgac.miso.sqlstore.SQLKitComponentDescriptorDAO">
+    <property name="cascadeType">
+      <value type="javax.persistence.CascadeType">PERSIST</value>
+    </property>
+    <property name="kitDescriptorDAO" ref="sqlKitDescriptorDAO"/>
+    <property name="jdbcTemplate" ref="interfaceTemplate"/>
+  </bean>
+
+  <bean id="sqlKitComponentDAO"
+        class="uk.ac.bbsrc.tgac.miso.sqlstore.SQLKitComponentDAO">
+    <property name="cascadeType">
+      <value type="javax.persistence.CascadeType">PERSIST</value>
+    </property>
+    <property name="kitComponentDescriptorDAO" ref="sqlKitComponentDescriptorDAO"/>
     <property name="noteDAO" ref="sqlNoteDAO"/>
     <property name="jdbcTemplate" ref="interfaceTemplate"/>
   </bean>
@@ -676,13 +697,35 @@
     </property>
   </bean>
 
-  <bean name="kitStore" class="org.springframework.aop.framework.ProxyFactoryBean">
+  <bean name="kitComponentStore" class="org.springframework.aop.framework.ProxyFactoryBean">
     <property name="proxyInterfaces">
-      <value>uk.ac.bbsrc.tgac.miso.core.store.KitStore</value>
+      <value>uk.ac.bbsrc.tgac.miso.core.store.KitComponentStore</value>
     </property>
     <property name="interceptorNames">
       <list>
-        <value>sqlKitDAO</value>
+        <value>sqlKitComponentDAO</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean name="kitComponentDescriptorStore" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <value>uk.ac.bbsrc.tgac.miso.core.store.KitComponentDescriptorStore</value>
+    </property>
+    <property name="interceptorNames">
+      <list>
+        <value>sqlKitComponentDescriptorDAO</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean name="kitDescriptorStore" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <value>uk.ac.bbsrc.tgac.miso.core.store.KitDescriptorStore</value>
+    </property>
+    <property name="interceptorNames">
+      <list>
+        <value>sqlKitDescriptorDAO</value>
       </list>
     </property>
   </bean>

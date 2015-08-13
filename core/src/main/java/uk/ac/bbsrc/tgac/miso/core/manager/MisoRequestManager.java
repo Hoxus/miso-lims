@@ -25,13 +25,17 @@ package uk.ac.bbsrc.tgac.miso.core.manager;
 
 import com.eaglegenomics.simlims.core.Note;
 import com.eaglegenomics.simlims.core.SecurityProfile;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.bbsrc.tgac.miso.core.data.Project;
 import uk.ac.bbsrc.tgac.miso.core.data.*;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.*;
-import uk.ac.bbsrc.tgac.miso.core.data.impl.kit.KitDescriptor;
+import uk.ac.bbsrc.tgac.miso.core.data.KitComponentDescriptor;
+import uk.ac.bbsrc.tgac.miso.core.data.KitDescriptor;
 import uk.ac.bbsrc.tgac.miso.core.data.type.*;
 import uk.ac.bbsrc.tgac.miso.core.event.Alert;
 import uk.ac.bbsrc.tgac.miso.core.store.*;
@@ -61,7 +65,11 @@ public class MisoRequestManager implements RequestManager {
   @Autowired
   private EntityGroupStore entityGroupStore;
   @Autowired
-  private KitStore kitStore;
+  private KitComponentStore kitComponentStore;
+  @Autowired
+  private KitDescriptorStore kitDescriptorStore;
+  @Autowired
+  private KitComponentDescriptorStore kitComponentDescriptorStore;
   @Autowired
   private LibraryStore libraryStore;
   @Autowired
@@ -125,8 +133,15 @@ public class MisoRequestManager implements RequestManager {
     this.entityGroupStore = entityGroupStore;
   }
 
-  public void setKitStore(KitStore kitStore) {
-    this.kitStore = kitStore;
+  public void setKitComponentStore(KitComponentStore kitComponentStore) {
+    this.kitComponentStore = kitComponentStore;
+  }
+
+  public void setKitDescriptorStore(KitDescriptorStore kitDescriptorStore) {
+    this.kitDescriptorStore = kitDescriptorStore;
+  }
+  public void setKitComponentDescriptorStore(KitComponentDescriptorStore kitComponentDescriptorStore) {
+    this.kitComponentDescriptorStore = kitComponentDescriptorStore;
   }
 
   public void setLibraryStore(LibraryStore libraryStore) {
@@ -1128,72 +1143,177 @@ public class MisoRequestManager implements RequestManager {
   }
 
   @Override
-  public Collection<Kit> listAllKits() throws IOException {
-    if (kitStore != null) {
-      return kitStore.listAll();
+  public Collection<KitComponent> listAllKitComponents() throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listAll();
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
-  public Collection<Kit> listKitsByExperimentId(long experimentId) throws IOException {
-    if (kitStore != null) {
-      return kitStore.listByExperiment(experimentId);
+  public Collection<KitComponent> listKitComponentsByExperimentId(long experimentId) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listByExperiment(experimentId);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
-  public Collection<Kit> listKitsByManufacturer(String manufacturer) throws IOException {
-    if (kitStore != null) {
-      return kitStore.listByManufacturer(manufacturer);
+  public Collection<KitComponent> listKitComponentsByManufacturer(String manufacturer) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listByManufacturer(manufacturer);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
-  public Collection<Kit> listKitsByType(KitType kitType) throws IOException {
-    if (kitStore != null) {
-      return kitStore.listKitsByType(kitType);
+  public Collection<KitComponent> listKitComponentsByType(KitType kitType) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listByType(kitType);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponent> listKitComponentsByLocationBarcode(String locationBarcode) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listKitComponentsByLocationBarcode(locationBarcode);
+    }
+    else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponent> listKitComponentsByLotNumber(String lotNumber) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listKitComponentsByLotNumber(lotNumber);
+    }
+    else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponent> listKitComponentsByReceivedDate(LocalDate receivedDate) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listKitComponentsByReceivedDate(receivedDate);
+    }
+    else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponent> listKitComponentsByExpiryDate(LocalDate expiryDate) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listKitComponentsByExpiryDate(expiryDate);
+    }
+    else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponent> listKitComponentsByExhausted(boolean exhausted) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listKitComponentsByExhausted(exhausted);
+    }
+    else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponent> listKitComponentsByKitComponentDescriptorId(long kitComponentDescriptorId) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listKitComponentsByKitComponentDescriptorId(kitComponentDescriptorId);
+    }
+    else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponent> listKitComponentsByKitDescriptorId(long kitDescriptorID) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.listKitComponentsByKitDescriptorId(kitDescriptorID);
+    } else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 /*
   public Collection<KitType> listAllKitTypes() throws IOException {
-    if (kitStore != null) {
-      return ((KitStore) kitStore).listAllKitTypes();
+    if (kitComponentStore != null) {
+      return ((KitComponentStore) kitComponentStore).listAllKitTypes();
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 */
 
   @Override
   public Collection<KitDescriptor> listAllKitDescriptors() throws IOException {
-    if (kitStore != null) {
-      return kitStore.listAllKitDescriptors();
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.listAll();
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
   public Collection<KitDescriptor> listKitDescriptorsByType(KitType kitType) throws IOException {
-    if (kitStore != null) {
-      return kitStore.listKitDescriptorsByType(kitType);
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.listKitDescriptorsByType(kitType);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitComponentDescriptor> listKitComponentDescriptorsByKitDescriptorId(long kitDescriptorId) throws IOException {
+    if (kitComponentDescriptorStore != null) {
+      return kitComponentDescriptorStore.listKitComponentDescriptorsByKitDescriptorId(kitDescriptorId);
+    } else {
+      throw new IOException("No kitComponentDescriptorStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitDescriptor> listKitDescriptorsByManufacturer(String manufacturer) throws IOException {
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.listKitDescriptorsByManufacturer(manufacturer);
+    } else {
+      throw new IOException("No kitDescriptorStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitDescriptor> listKitDescriptorsByPlatform(PlatformType platformType) throws IOException {
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.listKitDescriptorsByPlatform(platformType);
+    } else {
+      throw new IOException("No kitDescriptorStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Collection<KitDescriptor> listKitDescriptorsByUnits(String units) throws IOException {
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.listKitDescriptorsByUnits(units);
+    } else {
+      throw new IOException("No kitDescriptorStore available. Check that it has been declared in the Spring config.");
     }
   }
 
@@ -1558,7 +1678,17 @@ public class MisoRequestManager implements RequestManager {
     }
   }
 
-//SAVES
+  @Override
+  public boolean isKitComponentAlreadyLogged(String identificationBarcode) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.isKitComponentAlreadyLogged(identificationBarcode);
+    }
+    else {
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  //SAVES
 
   @Override
   public long saveProject(Project project) throws IOException {
@@ -1841,22 +1971,42 @@ public class MisoRequestManager implements RequestManager {
   }
 
   @Override
-  public long saveKit(Kit kit) throws IOException {
-    if (kitStore != null) {
-      return kitStore.save(kit);
+  public long saveKitComponent(KitComponent kitComponent) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.save(kitComponent);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public long saveKitComponentDescriptor(KitComponentDescriptor kitComponentDescriptor) throws IOException {
+    if (kitComponentDescriptor != null) {
+      return kitComponentDescriptorStore.save(kitComponentDescriptor);
+    }
+    else {
+      throw new IOException("No kitComponentDescriptorStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
   public long saveKitDescriptor(KitDescriptor kitDescriptor) throws IOException {
-    if (kitStore != null) {
-      return kitStore.saveKitDescriptor(kitDescriptor);
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.save(kitDescriptor);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitDescriptorStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public long saveKitChangeLog(JSONObject changeLog) throws IOException {
+    if (kitComponentStore != null){
+      return kitComponentStore.saveChangeLog(changeLog);
+    }
+    else {
+      throw new IOException("No KitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 
@@ -1892,9 +2042,37 @@ public class MisoRequestManager implements RequestManager {
 
   //GETS
   @Override
+  public JSONArray getKitChangeLog() throws IOException {
+    if(kitComponentStore != null) {
+      return kitComponentStore.getKitChangeLog();
+    } else {
+      throw new IOException("No KitComponentStore available. Check that it has been declared in the Spring config");
+    }
+  }
+
+  @Override
+  public JSONArray getKitChangeLogByKitComponentId(long kitComponentId) throws IOException {
+    if(kitComponentStore !=null){
+      return kitComponentStore.getKitChangeLogByKitComponentId(kitComponentId);
+    }else{
+      throw new IOException("No KitComponentStore available. Check that it has been declared in the Spring config");
+    }
+  }
+
+  @Override
   public Project getProjectById(long projectId) throws IOException {
     if (projectStore != null) {
       return projectStore.get(projectId);
+    }
+    else {
+      throw new IOException("No projectStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public Project getProjectByAlias(String projectAlias) throws IOException {
+    if (projectStore != null) {
+      return projectStore.getByAlias(projectAlias);
     }
     else {
       throw new IOException("No projectStore available. Check that it has been declared in the Spring config.");
@@ -2393,52 +2571,62 @@ public class MisoRequestManager implements RequestManager {
   }
 
   @Override
-  public Kit getKitById(long kitId) throws IOException {
-    if (kitStore != null) {
-      return kitStore.get(kitId);
+  public KitComponent getKitComponentById(long kitId) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.get(kitId);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
-  public Kit getKitByIdentificationBarcode(String barcode) throws IOException {
-    if (kitStore != null) {
-      return kitStore.getKitByIdentificationBarcode(barcode);
+  public KitComponent getKitComponentByIdentificationBarcode(String barcode) throws IOException {
+    if (kitComponentStore != null) {
+      return kitComponentStore.getKitComponentByIdentificationBarcode(barcode);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
-  public Kit getKitByLotNumber(String lotNumber) throws IOException {
-    if (kitStore != null) {
-      return kitStore.getKitByLotNumber(lotNumber);
+  public KitComponentDescriptor getKitComponentDescriptorById(long kitComponentDescriptorId) throws IOException{
+    if (kitComponentDescriptorStore != null) {
+      return kitComponentDescriptorStore.getKitComponentDescriptorById(kitComponentDescriptorId);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitComponentDescriptorStore available. Check that it has been declared in the Spring config.");
+    }
+  }
+
+  @Override
+  public KitComponentDescriptor getKitComponentDescriptorByReferenceNumber(String referenceNumber) throws IOException {
+    if (kitComponentDescriptorStore != null) {
+      return kitComponentDescriptorStore.getKitComponentDescriptorByReferenceNumber(referenceNumber);
+    }
+    else {
+      throw new IOException("No kitComponentDescriptorStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
   public KitDescriptor getKitDescriptorById(long kitDescriptorId) throws IOException {
-    if (kitStore != null) {
-      return kitStore.getKitDescriptorById(kitDescriptorId);
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.getKitDescriptorById(kitDescriptorId);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitDescriptorStore available. Check that it has been declared in the Spring config.");
     }
   }
 
   @Override
   public KitDescriptor getKitDescriptorByPartNumber(String partNumber) throws IOException {
-    if (kitStore != null) {
-      return kitStore.getKitDescriptorByPartNumber(partNumber);
+    if (kitDescriptorStore != null) {
+      return kitDescriptorStore.getKitDescriptorByPartNumber(partNumber);
     }
     else {
-      throw new IOException("No kitStore available. Check that it has been declared in the Spring config.");
+      throw new IOException("No kitDescriptorStore available. Check that it has been declared in the Spring config.");
     }
   }
 

@@ -65,6 +65,10 @@ public abstract class DataObjectFactory {
 
   public abstract LibraryQC getLibraryQC();
 
+  public abstract KitComponent getKitComponent();
+  public abstract KitComponentDescriptor getKitComponentDescriptor();
+  public abstract KitDescriptor getKitDescriptor();
+
   public abstract Run getRun();
   public abstract Run getRun(User user);
 

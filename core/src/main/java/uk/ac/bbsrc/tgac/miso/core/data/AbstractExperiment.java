@@ -28,7 +28,6 @@ import com.eaglegenomics.simlims.core.User;
 import org.w3c.dom.Document;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.PlatformImpl;
 import uk.ac.bbsrc.tgac.miso.core.data.type.KitType;
-import uk.ac.bbsrc.tgac.miso.core.data.visitor.SubmittableVisitor;
 import uk.ac.bbsrc.tgac.miso.core.security.SecurableByProfile;
 
 import javax.persistence.*;
@@ -74,7 +73,7 @@ public abstract class AbstractExperiment implements Experiment {
   @OneToOne(targetEntity = PlatformImpl.class, cascade = CascadeType.ALL)
   private Platform platform;
   
-  private Collection<Kit> kits = new HashSet<Kit>();
+  private Collection<KitComponent> kitComponents = new HashSet<KitComponent>();
 
   public Study getStudy() {
     return study;
@@ -208,14 +207,14 @@ public abstract class AbstractExperiment implements Experiment {
     this.pool = pool;
   }
 
-  public Collection<Kit> getKits() {
-    return kits;
+  public Collection<KitComponent> getKitComponents() {
+    return kitComponents;
   }
 
-  public Collection<Kit> getKitsByKitType(KitType kitType) {
-    ArrayList<Kit> ks = new ArrayList<Kit>();
-    for (Kit k : kits) {
-      if (k.getKitDescriptor().getKitType().equals(kitType)) {
+  public Collection<KitComponent> getKitsByKitType(KitType kitType) {
+    ArrayList<KitComponent> ks = new ArrayList<KitComponent>();
+    for (KitComponent k : kitComponents) {
+      if (k.getKitComponentDescriptor().getKitDescriptor().getKitType().equals(kitType)) {
         ks.add(k);
       }
     }
@@ -223,12 +222,12 @@ public abstract class AbstractExperiment implements Experiment {
     return ks;
   }
 
-  public void setKits(Collection<Kit> kits) {
-    this.kits = kits;
+  public void setKitComponents(Collection<KitComponent> kitComponents) {
+    this.kitComponents = kitComponents;
   }
 
-  public void addKit(Kit kit) {
-    this.kits.add(kit);
+  public void addKit(KitComponent kitComponent) {
+    this.kitComponents.add(kitComponent);
   }
 
 /*
@@ -244,7 +243,7 @@ public abstract class AbstractExperiment implements Experiment {
   public boolean isDeletable() {
     return getId() != AbstractExperiment.UNSAVED_ID;
     /*&&
-           getKits().isEmpty() &&
+           getKitComponents().isEmpty() &&
            getPool() == null;
               */
   }

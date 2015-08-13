@@ -23,55 +23,49 @@
 
 package uk.ac.bbsrc.tgac.miso.core.data.impl.kit;
 
+import uk.ac.bbsrc.tgac.miso.core.data.KitDescriptor;
 import uk.ac.bbsrc.tgac.miso.core.data.type.KitType;
 import uk.ac.bbsrc.tgac.miso.core.data.type.PlatformType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
- * A KitDescriptor handles information about a consumable element that is generally typed by a name, manufacturer and part number. Kits use
- * KitDescriptors, coupled with a lot number, to represent a real-world manifestation of a consumable kit.
+ * A KitDescriptor handles information about a consumable element that is generally typed by a name, manufacturer and part number. KitComponents use
+ * KitComponentsDescriptors, which in turn use KitDescriptors to represent a real-world manifestation of a consumable kit.
  *
- * @author Rob Davey
+ * @author Rob Davey, Michal Zak
  * @since 0.0.2
  */
 @Entity
-public class KitDescriptor implements Serializable {
-
+public class KitDescriptorImpl implements KitDescriptor, Serializable {
   /** Field UNSAVED_ID  */
   public static final Long UNSAVED_ID = 0L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private long kitDescriptorId = KitDescriptor.UNSAVED_ID;
+  private long kitDescriptorId = KitDescriptorImpl.UNSAVED_ID;
   private String name = "";
   private Double version = 0.0D;
   private String manufacturer = "";
   private String partNumber = "";
-  private Integer stockLevel = 0;
+  private String units ="";
+  private BigDecimal kitValue;
 
   @Enumerated(EnumType.STRING)
   private KitType kitType;
-  
+
   @Enumerated(EnumType.STRING)
   private PlatformType platformType;
 
-  /**
-   * Returns the kitDescriptorId of this KitDescriptor object.
-   *
-   * @return Long kitDescriptorId.
-   */
-  public Long getKitDescriptorId() {
-    return kitDescriptorId;
+  @Override
+  public long getId() {
+    return this.kitDescriptorId;
   }
 
-  /**
-   * Sets the kitDescriptorId of this KitDescriptor object.
-   *
-   * @param kitDescriptorId kitDescriptorId.
-   */
-  public void setKitDescriptorId(Long kitDescriptorId) {
+  @Override
+  public void setId(long kitDescriptorId) {
     this.kitDescriptorId = kitDescriptorId;
   }
 
@@ -91,6 +85,40 @@ public class KitDescriptor implements Serializable {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  /**
+   * Returns the units in which we measure this KitDescriptor object
+   * @return units String
+   */
+  public String getUnits() {
+    return units;
+  }
+
+  /**
+   * Sets the units in which we measure this KitDescriptor object
+   * @param units units
+   */
+  public void setUnits(String units) {
+    this.units = units;
+  }
+
+  /**
+   * Returns the monetary value of this KitDescriptor object in pounds
+   * @return value float
+   */
+  public BigDecimal getKitValue() {
+    return kitValue;
+  }
+
+  /**
+   * Sets the monetary value of this KitDescriptor object in pounds
+   * mySQL:: FLOAT(7,2) precision
+   * @param kitValue value
+   */
+
+  public void setKitValue(BigDecimal kitValue) {
+    this.kitValue = kitValue;
   }
 
   /**
@@ -152,24 +180,6 @@ public class KitDescriptor implements Serializable {
    *
    * @return Integer stockLevel.
    */
-  public Integer getStockLevel() {
-    return stockLevel;
-  }
-
-  /**
-   * Sets the stockLevel of this KitDescriptor object.
-   *
-   * @param stockLevel stockLevel.
-   */
-  public void setStockLevel(Integer stockLevel) {
-    this.stockLevel = stockLevel;
-  }
-
-  /**
-   * Returns the kitType of this KitDescriptor object.
-   *
-   * @return KitType kitType.
-   */
   public KitType getKitType() {
     return kitType;
   }
@@ -209,9 +219,13 @@ public class KitDescriptor implements Serializable {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append(getKitDescriptorId());
+    sb.append(getId());
     sb.append(" : ");
     sb.append(getName());
+    sb.append(" : ");
+    sb.append(getVersion());
+    sb.append(" : ");
+    sb.append(getManufacturer());
     sb.append(" : ");
     sb.append(getPartNumber());
     sb.append(" : ");
@@ -219,7 +233,9 @@ public class KitDescriptor implements Serializable {
     sb.append(" : ");
     sb.append(getPlatformType());    
     sb.append(" : ");
-    sb.append(getStockLevel());    
+    sb.append(getUnits());
+    sb.append(" : ");
+    sb.append(getKitValue());
     return sb.toString();
   }
 }

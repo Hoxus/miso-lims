@@ -32,8 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.bbsrc.tgac.miso.core.data.Experiment;
-import uk.ac.bbsrc.tgac.miso.core.data.Kit;
-import uk.ac.bbsrc.tgac.miso.core.data.impl.kit.*;
+import uk.ac.bbsrc.tgac.miso.core.data.KitComponent;
+import uk.ac.bbsrc.tgac.miso.core.data.KitDescriptor;
 import uk.ac.bbsrc.tgac.miso.core.data.type.KitType;
 import uk.ac.bbsrc.tgac.miso.core.manager.RequestManager;
 
@@ -66,24 +66,24 @@ public class ExperimentControllerHelperService {
     try {
       if (json.has("barcode")) {
         String barcode = json.getString("barcode");
-        Kit kit = requestManager.getKitByIdentificationBarcode(barcode);
-        if (kit != null) {
-          return JSONUtils.SimpleJSONResponse(kit.toString());
+        KitComponent kitComponent = requestManager.getKitComponentByIdentificationBarcode(barcode);
+        if (kitComponent != null) {
+          return JSONUtils.SimpleJSONResponse(kitComponent.toString());
         }
         else {
-          //new kit?
+          //new kitComponent?
           Pattern ls454KitPattern = Pattern.compile("([\\d]{11})([\\d]{8})([\\d]{6})"); //05365473001 93765920 102010
-          Pattern illuminaKitPattern = Pattern.compile("([A-Z0-9]{3}-[\\d]{7})"); // RGT-0520823 - outer kit barcode // 15003926 - partNumber // 5454482 - lotNumber
+          Pattern illuminaKitPattern = Pattern.compile("([A-Z0-9]{3}-[\\d]{7})"); // RGT-0520823 - outer kitComponent barcode // 15003926 - partNumber // 5454482 - lotNumber
           Pattern solidKitPattern = Pattern.compile("foo"); //05365473001 93765920 102010
 
           if (ls454KitPattern.matcher(barcode).matches()) {
-            return JSONUtils.SimpleJSONResponse("Looks like a 454 kit");
+            return JSONUtils.SimpleJSONResponse("Looks like a 454 kitComponent");
           }
           else if (illuminaKitPattern.matcher(barcode).matches()) {
-            return JSONUtils.SimpleJSONResponse("Looks like an Illumina kit");
+            return JSONUtils.SimpleJSONResponse("Looks like an Illumina kitComponent");
           }
           else if (solidKitPattern.matcher(barcode).matches()) {
-            return JSONUtils.SimpleJSONResponse("Looks like a SOLiD kit");
+            return JSONUtils.SimpleJSONResponse("Looks like a SOLiD kitComponent");
           }
           else {
             return JSONUtils.SimpleJSONError("Unrecognised barcode");
@@ -98,14 +98,18 @@ public class ExperimentControllerHelperService {
     return JSONUtils.SimpleJSONError("Cannot process kit barcode");
   }
 
+
+
+  //TODO: LOT NUMBER IS NOT UNIQUE TO JUST ONE KIT COMPONENT
+  /*
   public JSONObject lookupKitByLotNumber(HttpSession session, JSONObject json) {
     try {
       if (json.has("lotNumber")) {
         String lotNumber = json.getString("lotNumber");
         //String platform = json.getString("platform");
-        Kit kit = requestManager.getKitByLotNumber(lotNumber);
-        if (kit != null) {
-          return JSONUtils.SimpleJSONResponse(kit.toString());
+        KitComponent kitComponent = requestManager.getKitComponentByLotNumber(lotNumber);
+        if (kitComponent != null) {
+          return JSONUtils.SimpleJSONResponse(kitComponent.toString());
         }
         else {
           Pattern ls454KitPattern = Pattern.compile("([\\d]{11})([\\d]{8})([\\d]{6})"); //05365473001 93765920 102010
@@ -116,15 +120,15 @@ public class ExperimentControllerHelperService {
           Matcher solidMatcher = solidKitPattern.matcher(lotNumber);
 
           if (ls454Matcher.matches()) {
-            log.info("Looks like a 454 kit - getting lot number");
+            log.info("Looks like a 454 kitComponent - getting lot number");
             lotNumber = ls454Matcher.group(2);
           }
           else if (illuminaMatcher.matches()) {
-            log.info("Looks like an Illumina kit - getting lot number");
+            log.info("Looks like an Illumina kitComponent - getting lot number");
             lotNumber = illuminaMatcher.group(1);
           }
           else if (solidMatcher.matches()) {
-            log.info("Looks like a SOLiD kit - getting lot number");
+            log.info("Looks like a SOLiD kitComponent - getting lot number");
             lotNumber = solidMatcher.group(1);
           }
           else {
@@ -139,7 +143,7 @@ public class ExperimentControllerHelperService {
     }
     return JSONUtils.SimpleJSONError("Cannot process kit barcode");
   }
-
+*/
   public JSONObject lookupKitDescriptorByPartNumber(HttpSession session, JSONObject json) {
     try {
       if (json.has("partNumber")) {
@@ -181,7 +185,7 @@ public class ExperimentControllerHelperService {
         KitDescriptor kitDescriptor = requestManager.getKitDescriptorByPartNumber(partNumber);
         if (kitDescriptor != null) {
           Map<String, Object> m = new HashMap<String, Object>();
-          m.put("id", kitDescriptor.getKitDescriptorId());
+          m.put("id", kitDescriptor.getId());
           m.put("name", kitDescriptor.getName());
           return JSONUtils.JSONObjectResponse(m);
         }
@@ -208,7 +212,7 @@ public class ExperimentControllerHelperService {
         int count = 0;
         for (KitDescriptor k : kits) {
           if (e.getPlatform().getPlatformType().equals(k.getPlatformType())) {
-            lkits.append("{'name':'"+k.getName()+"', 'id':'"+k.getKitDescriptorId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
+            lkits.append("{'name':'"+k.getName()+"', 'id':'"+k.getId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
             if (count < kits.size()) lkits.append(",");
             count++;
           }
@@ -223,7 +227,7 @@ public class ExperimentControllerHelperService {
           count = 0;
           for (KitDescriptor k : mkitds) {
             if (e.getPlatform().getPlatformType().equals(k.getPlatformType())) {
-              mkits.append("{'name':'"+k.getName()+"', 'id':'"+k.getKitDescriptorId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
+              mkits.append("{'name':'"+k.getName()+"', 'id':'"+k.getId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
               if (count < mkitds.size()) mkits.append(",");
               count++;
             }
@@ -248,7 +252,7 @@ public class ExperimentControllerHelperService {
     }
     return JSONUtils.SimpleJSONError("Cannot select library kits");
   }
-
+/*
   public JSONObject addLibraryKit(HttpSession session, JSONObject json) {
     try {
       if (json.has("experimentId")) {
@@ -256,19 +260,19 @@ public class ExperimentControllerHelperService {
         String kitDescriptor = json.getString("kitDescriptor");
         String lotNumber = json.getString("lotNumber");
 
-        LibraryKit lk = new LibraryKit();
+        LibraryKitComponent lk = new LibraryKitComponent();
         KitDescriptor kd = requestManager.getKitDescriptorById(new Long(kitDescriptor));
         lk.setKitDescriptor(kd);
         lk.setLotNumber(lotNumber);
         if (!json.has("kitDate") || json.getString("kitDate").equals("")) {
-          lk.setKitDate(new Date());
+          lk.setKitReceivedDate(new Date());
         }
 
         Experiment e = requestManager.getExperimentById(new Long(experimentId));
         e.addKit(lk);
         requestManager.saveExperiment(e);
-        Integer newStock = kd.getStockLevel()-1;
-        kd.setStockLevel(newStock);
+        //Integer newStock = kd.getStockLevel()-1;
+        //kd.setStockLevel(newStock);
         requestManager.saveKitDescriptor(kd);
       }
       return JSONUtils.SimpleJSONResponse("Saved kit!");
@@ -278,7 +282,7 @@ public class ExperimentControllerHelperService {
       return JSONUtils.SimpleJSONError("Failed to save library kit");
     }
   }
-
+*/
 // empcr
   public JSONObject getEmPcrKitDescriptors(HttpSession session, JSONObject json) {
     try {
@@ -292,7 +296,7 @@ public class ExperimentControllerHelperService {
         int count = 0;
         for (KitDescriptor k : kits) {
           if (e.getPlatform().getPlatformType().equals(k.getPlatformType())) {
-            sb.append("{'name':'"+k.getName()+"', 'id':'"+k.getKitDescriptorId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
+            sb.append("{'name':'"+k.getName()+"', 'id':'"+k.getId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
             if (count < kits.size()) sb.append(",");
             count++;
           }
@@ -312,7 +316,7 @@ public class ExperimentControllerHelperService {
     }
     return JSONUtils.SimpleJSONError("Cannot select EmPCR kits");
   }
-
+ /*
   public JSONObject addEmPcrKit(HttpSession session, JSONObject json) {
     try {
       if (json.has("experimentId")) {
@@ -320,19 +324,19 @@ public class ExperimentControllerHelperService {
         String kitDescriptor = json.getString("kitDescriptor");
         String lotNumber = json.getString("lotNumber");
 
-        EmPcrKit lk = new EmPcrKit();
+        EmPcrKitComponent lk = new EmPcrKitComponent();
         KitDescriptor kd = requestManager.getKitDescriptorById(new Long(kitDescriptor));
         lk.setKitDescriptor(kd);
         lk.setLotNumber(lotNumber);
         if (!json.has("kitDate") || json.getString("kitDate").equals("")) {
-          lk.setKitDate(new Date());
+          lk.setKitReceivedDate(new Date());
         }
 
         Experiment e = requestManager.getExperimentById(new Long(experimentId));
         e.addKit(lk);
         requestManager.saveExperiment(e);
-        Integer newStock = kd.getStockLevel()-1;
-        kd.setStockLevel(newStock);
+        //Integer newStock = kd.getStockLevel()-1;
+        //kd.setStockLevel(newStock);
         requestManager.saveKitDescriptor(kd);
       }
       return JSONUtils.SimpleJSONResponse("Saved kit!");
@@ -342,7 +346,7 @@ public class ExperimentControllerHelperService {
       return JSONUtils.SimpleJSONError("Failed to save EmPCR kit");
     }
   }
-
+*/
 //clustering
   public JSONObject getClusteringKitDescriptors(HttpSession session, JSONObject json) {
     try {
@@ -356,7 +360,7 @@ public class ExperimentControllerHelperService {
         int count = 0;
         for (KitDescriptor k : kits) {
           if (e.getPlatform().getPlatformType().equals(k.getPlatformType())) {
-            sb.append("{'name':'"+k.getName()+"', 'id':'"+k.getKitDescriptorId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
+            sb.append("{'name':'"+k.getName()+"', 'id':'"+k.getId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
             if (count < kits.size()) sb.append(",");
             count++;
           }
@@ -376,7 +380,7 @@ public class ExperimentControllerHelperService {
     }
     return JSONUtils.SimpleJSONError("Cannot select clustering kits");
   }
-
+/*
   public JSONObject addClusteringKit(HttpSession session, JSONObject json) {
     try {
       if (json.has("experimentId")) {
@@ -384,19 +388,19 @@ public class ExperimentControllerHelperService {
         String kitDescriptor = json.getString("kitDescriptor");
         String lotNumber = json.getString("lotNumber");
 
-        ClusterKit lk = new ClusterKit();
+        ClusterKitComponent lk = new ClusterKitComponent();
         KitDescriptor kd = requestManager.getKitDescriptorById(new Long(kitDescriptor));
         lk.setKitDescriptor(kd);
         lk.setLotNumber(lotNumber);
         if (!json.has("kitDate") || json.getString("kitDate").equals("")) {
-          lk.setKitDate(new Date());
+          lk.setKitReceivedDate(new Date());
         }
 
         Experiment e = requestManager.getExperimentById(new Long(experimentId));
         e.addKit(lk);
         requestManager.saveExperiment(e);
-        Integer newStock = kd.getStockLevel()-1;
-        kd.setStockLevel(newStock);
+        //Integer newStock = kd.getStockLevel()-1;
+        //kd.setStockLevel(newStock);
         requestManager.saveKitDescriptor(kd);
       }
       return JSONUtils.SimpleJSONResponse("Saved kit!");
@@ -406,7 +410,7 @@ public class ExperimentControllerHelperService {
       return JSONUtils.SimpleJSONError("Failed to save clustering kit");
     }
   }
-
+*/
 //sequencing
   public JSONObject getSequencingKitDescriptors(HttpSession session, JSONObject json) {
     try {
@@ -420,7 +424,7 @@ public class ExperimentControllerHelperService {
         int count = 0;
         for (KitDescriptor k : kits) {
           if (e.getPlatform().getPlatformType().equals(k.getPlatformType())) {
-            sb.append("{'name':'"+k.getName()+"', 'id':'"+k.getKitDescriptorId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
+            sb.append("{'name':'"+k.getName()+"', 'id':'"+k.getId()+"', 'partNumber':'"+k.getPartNumber()+"'}");
             if (count < kits.size()) sb.append(",");
             count++;
           }
@@ -440,7 +444,7 @@ public class ExperimentControllerHelperService {
     }
     return JSONUtils.SimpleJSONError("Cannot select sequencing kits");
   }
-
+  /*
   public JSONObject addSequencingKit(HttpSession session, JSONObject json) {
     try {
       if (json.has("experimentId")) {
@@ -448,19 +452,17 @@ public class ExperimentControllerHelperService {
         String kitDescriptor = json.getString("kitDescriptor");
         String lotNumber = json.getString("lotNumber");
 
-        SequencingKit lk = new SequencingKit();
+        SequencingKitComponent lk = new SequencingKitComponent();
         KitDescriptor kd = requestManager.getKitDescriptorById(new Long(kitDescriptor));
         lk.setKitDescriptor(kd);
         lk.setLotNumber(lotNumber);
         if (!json.has("kitDate") || json.getString("kitDate").equals("")) {
-          lk.setKitDate(new Date());
+          lk.setKitReceivedDate(new Date());
         }
 
         Experiment e = requestManager.getExperimentById(new Long(experimentId));
         e.addKit(lk);
         requestManager.saveExperiment(e);
-        Integer newStock = kd.getStockLevel()-1;
-        kd.setStockLevel(newStock);
         requestManager.saveKitDescriptor(kd);
       }
       return JSONUtils.SimpleJSONResponse("Saved kit!");
@@ -470,7 +472,7 @@ public class ExperimentControllerHelperService {
       return JSONUtils.SimpleJSONError("Failed to save sequencing kit");
     }
   }
-
+ */
   public JSONObject listExperimentsDataTable(HttpSession session, JSONObject json) {
     try {
       JSONObject j = new JSONObject();

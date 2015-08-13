@@ -24,7 +24,7 @@
 package uk.ac.bbsrc.tgac.miso.core.store;
 
 import com.eaglegenomics.simlims.core.Note;
-import uk.ac.bbsrc.tgac.miso.core.data.Kit;
+import uk.ac.bbsrc.tgac.miso.core.data.KitComponent;
 import uk.ac.bbsrc.tgac.miso.core.data.Library;
 import uk.ac.bbsrc.tgac.miso.core.data.Run;
 import uk.ac.bbsrc.tgac.miso.core.data.Sample;
@@ -50,7 +50,7 @@ public interface NoteStore extends Store<Note> {
   List<Note> listByProjectOverview(Long overviewId) throws IOException;
 
   /**
-   * List all Notes related to a Kit given a Kit ID
+   * List all Notes related to a KitComponent given a KitComponent ID
    *
    * @param kitId of type Long
    * @return List<Note>
@@ -96,14 +96,14 @@ public interface NoteStore extends Store<Note> {
   long saveProjectOverviewNote(ProjectOverview overview, Note note) throws IOException;
 
   /**
-   * Save a Kit Note
+   * Save a KitComponent Note
    *
-   * @param kit of type Kit
+   * @param kitComponent of type KitComponent
    * @param note of type Note
    * @return long
    * @throws IOException when
    */
-  long saveKitNote(Kit kit, Note note) throws IOException;
+  long saveKitNote(KitComponent kitComponent, Note note) throws IOException;
 
   /**
    * Save a Sample Note

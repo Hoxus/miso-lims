@@ -32,6 +32,18 @@
     <%--</form>--%>
     <%--</span><br/>--%>
 
+    <h2>Kits</h2>
+    <ul class="bullets">
+      <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <li><a href="<c:url value="/miso/kitDescriptorManagement"/>">Kit Descriptor Management</a></li>
+        <li><a href="<c:url value="/miso/kitdescriptor/new"/>">Create a Kit Descriptor</a></li>
+        <li><a href="<c:url value="/miso/listKitChangeLog/"/>">Kit Components Change Log</a></li>
+      </sec:authorize>
+        <li><a href="<c:url value="/miso/kitcomponent/new"/>">Log a Kit Component</a></li>
+        <li><a href="<c:url value="/miso/kitComponentManagement/"/>">Kit Component Management</a></li>
+        <li><a href="<c:url value="/miso/listkitcomponents/"/>">List Kit Components</a></li>
+    </ul>
+
     <h2>Sample Processing</h2>
     <ul class="bullets">
         <li><a href="<c:url value="/miso/sample/receipt"/>">Receive Samples</a></li>

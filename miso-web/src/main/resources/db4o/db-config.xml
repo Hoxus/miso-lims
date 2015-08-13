@@ -116,7 +116,7 @@
         <property name="runDAO" ref="db4oRunDAO"/>
         <property name="poolDAO" ref="db4oPoolDAO"/>
         <property name="platformDAO" ref="db4oPlatformDAO"/>
-        <property name="kitDAO" ref="db4oKitDAO"/>
+        <property name="kitComponentDAO" ref="db4oKitDAO"/>
         <property name="securityProfileDAO" ref="db4oSecurityProfileDAO"/>
         <property name="jdbcTemplate" ref="interfaceTemplate"/>
     </bean>
@@ -294,7 +294,7 @@
     </bean>
 
     <bean id="db4oKitDAO"
-          class="uk.ac.bbsrc.tgac.miso.db4ostore.SQLKitDAO">
+          class="uk.ac.bbsrc.tgac.miso.db4ostore.SQLKitComponentDAO">
         <property name="cascadeType">
             <value type="javax.persistence.CascadeType">PERSIST</value>
         </property>
@@ -544,9 +544,9 @@
         </property>
     </bean>
 
-    <bean name="kitStore" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <bean name="kitComponentStore" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="proxyInterfaces">
-            <value>uk.ac.bbsrc.tgac.miso.core.store.KitStore</value>
+            <value>uk.ac.bbsrc.tgac.miso.core.store.KitComponentStorenentStore</value>
         </property>
         <property name="interceptorNames">
             <list>

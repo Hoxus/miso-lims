@@ -3162,7 +3162,7 @@ public class FormUtils {
                     library.setTagBarcodes(tbs);
                   }
                   else {
-                    throw new InputFormException("Barcode Kit specified but no tag barcodes entered for: '" + sampleAliasCell.getStringValue() + "'.");
+                    throw new InputFormException("Barcode KitComponent specified but no tag barcodes entered for: '" + sampleAliasCell.getStringValue() + "'.");
                   }
                 }
                 else {
@@ -4035,7 +4035,7 @@ public class FormUtils {
                     library.setTagBarcodes(tbs);
                   }
                   else {
-                    throw new InputFormException("Barcode Kit specified but no tag barcodes entered for: '" + s.getAlias() + "'.");
+                    throw new InputFormException("Barcode KitComponent specified but no tag barcodes entered for: '" + s.getAlias() + "'.");
                   }
                 }
                 else {
@@ -4402,7 +4402,7 @@ public class FormUtils {
                   library.setTagBarcodes(tbs);
                 }
                 else {
-                  throw new InputFormException("Barcode Kit specified but no tag barcodes entered for: '" + s.getAlias() + "'.");
+                  throw new InputFormException("Barcode KitComponent specified but no tag barcodes entered for: '" + s.getAlias() + "'.");
                 }
               }
               else {
@@ -4979,7 +4979,7 @@ public class FormUtils {
           library.setTagBarcodes(tbs);
         }
         else {
-          throw new InputFormException("Barcode Kit specified but no tag barcodes entered for: '" + library.getSample().getAlias() + "'.");
+          throw new InputFormException("Barcode KitComponent specified but no tag barcodes entered for: '" + library.getSample().getAlias() + "'.");
         }
       }
       else {

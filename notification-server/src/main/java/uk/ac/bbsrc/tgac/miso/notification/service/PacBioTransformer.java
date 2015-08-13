@@ -110,7 +110,7 @@ public class PacBioTransformer implements FileSetTransformer<String, String, Fil
 <ExpirationDate>2012-07-23</ExpirationDate>
 </EightPac>
 <TemplatePrep>
-<Name>DNA Template Prep Kit 2.0 (3Kb - 10Kb)</Name>
+<Name>DNA Template Prep KitComponent 2.0 (3Kb - 10Kb)</Name>
 <PartNumber>001540835</PartNumber>
 <LotNumber>110170</LotNumber>
 <Barcode>110170001540835072512</Barcode>
@@ -119,7 +119,7 @@ public class PacBioTransformer implements FileSetTransformer<String, String, Fil
 <InsertSize>10000</InsertSize>
 </TemplatePrep>
 <BindingKit>
-<Name>DNA/Polymerase Binding Kit 2.0 (24 Rxn)</Name>
+<Name>DNA/Polymerase Binding KitComponent 2.0 (24 Rxn)</Name>
 <PartNumber>001672551</PartNumber>
 <LotNumber>120126</LotNumber>
 <Barcode>120126001672551071712</Barcode>
@@ -127,14 +127,14 @@ public class PacBioTransformer implements FileSetTransformer<String, String, Fil
 <Control>Strobe_v1</Control>
 <IsControlUsed>false</IsControlUsed>
 </BindingKit>
-<SequencingKit>
+<SequencingKitComponent>
 <Name>ReagentPlate0</Name>
 <PartNumber>001558034</PartNumber>
 <LotNumber>111220</LotNumber>
 <Barcode>111220574001558034072012</Barcode>
 <ExpirationDate>2012-07-20</ExpirationDate>
 <Protocol>C2ReagentMixingProtocol_DWP</Protocol>
-</SequencingKit>
+</SequencingKitComponent>
 <ReagentTube0>
 <Name>ReagentTube0-0</Name>
 <PartNumber>001028310</PartNumber>

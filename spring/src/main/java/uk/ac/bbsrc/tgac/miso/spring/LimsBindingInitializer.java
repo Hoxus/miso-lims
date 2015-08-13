@@ -41,7 +41,7 @@ import org.springframework.web.context.request.WebRequest;
 import uk.ac.bbsrc.tgac.miso.core.data.*;
 import uk.ac.bbsrc.tgac.miso.core.data.Project;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.*;
-import uk.ac.bbsrc.tgac.miso.core.data.impl.kit.KitDescriptor;
+import uk.ac.bbsrc.tgac.miso.core.data.KitDescriptor;
 import uk.ac.bbsrc.tgac.miso.core.data.type.*;
 import uk.ac.bbsrc.tgac.miso.core.manager.RequestManager;
 
@@ -475,7 +475,7 @@ public class LimsBindingInitializer extends org.springframework.web.bind.support
       }
     });
 
-    binder.registerCustomEditor(Kit.class, new PropertyEditorSupport() {
+    binder.registerCustomEditor(KitComponent.class, new PropertyEditorSupport() {
       @Override
       public void setAsText(String element) throws IllegalArgumentException {
         setValue(resolveKit(element));
@@ -1121,18 +1121,18 @@ public class LimsBindingInitializer extends org.springframework.web.bind.support
   }
 
   /**
-   * Resolve a Kit object from an ID String
+   * Resolve a KitComponent object from an ID String
    *
    * @param element of type Object
-   * @return Kit
+   * @return KitComponent
    * @throws IllegalArgumentException when
    */
-  private Kit resolveKit(Object element) throws IllegalArgumentException {
+  private KitComponent resolveKit(Object element) throws IllegalArgumentException {
     Long id = null;
     if (element instanceof String && !"".equals(element))
       id = NumberUtils.parseNumber((String) element, Long.class).longValue();
     try {
-      return id != null ? requestManager.getKitById(id) : null;
+      return id != null ? requestManager.getKitComponentById(id) : null;
     }
     catch (IOException e) {
       if (log.isDebugEnabled()) {

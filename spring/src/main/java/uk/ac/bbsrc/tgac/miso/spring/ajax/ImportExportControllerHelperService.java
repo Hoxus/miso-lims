@@ -454,7 +454,7 @@ public class ImportExportControllerHelperService {
                     library.setTagBarcodes(tbs);
                   }
                   else {
-                    throw new InputFormException("Barcode Kit specified but no tag barcodes entered for library '" + jsonArrayElement.getString(3) + "'.");
+                    throw new InputFormException("Barcode KitComponent specified but no tag barcodes entered for library '" + jsonArrayElement.getString(3) + "'.");
                   }
                 }
                 else {

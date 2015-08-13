@@ -30,6 +30,9 @@ import uk.ac.bbsrc.tgac.miso.core.data.*;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.illumina.IlluminaPool;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.illumina.IlluminaRun;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.*;
+import uk.ac.bbsrc.tgac.miso.core.data.impl.kit.KitComponentDescriptorImpl;
+import uk.ac.bbsrc.tgac.miso.core.data.impl.kit.KitComponentImpl;
+import uk.ac.bbsrc.tgac.miso.core.data.impl.kit.KitDescriptorImpl;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.ls454.LS454Pool;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.ls454.LS454Run;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.pacbio.PacBioPool;
@@ -222,6 +225,21 @@ public class TgacDataObjectFactory extends DataObjectFactory {
   @Override
   public LibraryQC getLibraryQC() {
     return new LibraryQCImpl();
+  }
+
+  @Override
+  public KitComponent getKitComponent() {
+    return new KitComponentImpl();
+  }
+
+  @Override
+  public KitComponentDescriptor getKitComponentDescriptor() {
+    return new KitComponentDescriptorImpl();
+  }
+
+  @Override
+  public KitDescriptor getKitDescriptor() {
+    return new KitDescriptorImpl();
   }
 
   @Override

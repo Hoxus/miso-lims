@@ -25,20 +25,25 @@ package uk.ac.bbsrc.tgac.miso.core.manager;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.eaglegenomics.simlims.core.Note;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.joda.time.LocalDate;
 import uk.ac.bbsrc.tgac.miso.core.data.Project;
 import com.eaglegenomics.simlims.core.SecurityProfile;
 
 import uk.ac.bbsrc.tgac.miso.core.data.*;
 import uk.ac.bbsrc.tgac.miso.core.data.impl.*;
-import uk.ac.bbsrc.tgac.miso.core.data.impl.kit.KitDescriptor;
+import uk.ac.bbsrc.tgac.miso.core.data.KitComponentDescriptor;
+import uk.ac.bbsrc.tgac.miso.core.data.KitDescriptor;
 import uk.ac.bbsrc.tgac.miso.core.data.type.*;
 import uk.ac.bbsrc.tgac.miso.core.event.Alert;
 
 public interface RequestManager {
+
+  public boolean isKitComponentAlreadyLogged(String identificationBarcode) throws IOException;
 
   //SAVES
   public long saveProject(Project project) throws IOException;
@@ -70,8 +75,10 @@ public interface RequestManager {
   public long saveSecurityProfile(SecurityProfile profile) throws IOException;
   public long saveSubmission(Submission submission) throws IOException;
   public long saveSequencerReference(SequencerReference sequencerReference) throws IOException;
-  public long saveKit(Kit kit) throws IOException;
+  public long saveKitComponent(KitComponent kitComponent) throws IOException;
+  public long saveKitComponentDescriptor(KitComponentDescriptor kitComponentDescriptor) throws IOException;
   public long saveKitDescriptor(KitDescriptor kitDescriptor) throws IOException;
+  public long saveKitChangeLog(JSONObject changeLog) throws IOException;
   public <T extends List<S>, S extends Plateable> long savePlate(Plate<T, S> plate) throws IOException;
   public long saveAlert(Alert alert) throws IOException;
   public long saveEntityGroup(EntityGroup<? extends Nameable, ? extends Nameable> entityGroup) throws IOException;
@@ -110,6 +117,7 @@ public interface RequestManager {
   public Note getNoteById(long noteId) throws IOException;
   public Platform getPlatformById(long platformId) throws IOException;
   public Project getProjectById(long projectId) throws IOException;
+  public Project getProjectByAlias(String projectAlias) throws IOException;
   public ProjectOverview getProjectOverviewById(long overviewId) throws IOException;
   public Run getRunById(long runId) throws IOException;
   public Run getRunByAlias(String alias) throws IOException;
@@ -124,11 +132,17 @@ public interface RequestManager {
   public SequencerReference getSequencerReferenceById(long referenceId) throws IOException;
   public SequencerReference getSequencerReferenceByName(String referenceName) throws IOException;
   public SequencerReference getSequencerReferenceByRunId(long runId) throws IOException;
-  public Kit getKitById(long kitId) throws IOException;
-  public Kit getKitByIdentificationBarcode(String barcode) throws IOException;
-  public Kit getKitByLotNumber(String lotNumber) throws IOException;
+  public JSONArray getKitChangeLog() throws IOException;
+  public JSONArray getKitChangeLogByKitComponentId(long kitComponentId) throws IOException;
+
+  public KitComponent getKitComponentById(long kitId) throws IOException;
+  public KitComponent getKitComponentByIdentificationBarcode(String barcode) throws IOException;
+  public KitComponentDescriptor getKitComponentDescriptorById(long kitComponentDescriptorId) throws IOException;
+  public KitComponentDescriptor getKitComponentDescriptorByReferenceNumber(String referenceNumber) throws IOException;
   public KitDescriptor getKitDescriptorById(long kitDescriptorId) throws IOException;
   public KitDescriptor getKitDescriptorByPartNumber(String partNumber) throws IOException;
+  //public String getKitFullNameByKitComponentDescriptorId(long kitComponentDescriptorId) throws IOException;
+
   public QcType getSampleQcTypeById(long qcTypeId) throws IOException;
   public QcType getSampleQcTypeByName(String qcName) throws IOException;
   public QcType getLibraryQcTypeById(long qcTypeId) throws IOException;
@@ -280,11 +294,23 @@ public interface RequestManager {
   public Collection<SequencerReference> listAllSequencerReferences() throws IOException;
   public Collection<SequencerReference> listSequencerReferencesByPlatformType(PlatformType platformType) throws IOException;
 
-  public Collection<Kit> listAllKits() throws IOException;
+  public Collection<KitComponent> listAllKitComponents() throws IOException;
   //public Collection<KitType> listAllKitTypes() throws IOException;
-  public Collection<Kit> listKitsByExperimentId(long experimentId) throws IOException;
-  public Collection<Kit> listKitsByManufacturer(String manufacturer) throws IOException;
-  public Collection<Kit> listKitsByType(KitType kitType) throws IOException;
+  public Collection<KitComponent> listKitComponentsByExperimentId(long experimentId) throws IOException;
+  public Collection<KitComponent> listKitComponentsByManufacturer(String manufacturer) throws IOException;
+  public Collection<KitComponent> listKitComponentsByType(KitType kitType) throws IOException;
+  public Collection<KitComponent> listKitComponentsByLocationBarcode(String locationBarcode) throws IOException;
+  public Collection<KitComponent> listKitComponentsByLotNumber(String lotNumber) throws IOException;
+  public Collection<KitComponent> listKitComponentsByReceivedDate(LocalDate receivedDate) throws IOException;
+  public Collection<KitComponent> listKitComponentsByExpiryDate(LocalDate expiryDate) throws IOException;
+  public Collection<KitComponent> listKitComponentsByExhausted(boolean exhausted) throws IOException;
+  public Collection<KitComponent> listKitComponentsByKitComponentDescriptorId(long kitComponentDescriptorId) throws IOException;
+  public Collection<KitComponent> listKitComponentsByKitDescriptorId(long kitDescriptorID) throws IOException;
+
+  public Collection<KitComponentDescriptor> listKitComponentDescriptorsByKitDescriptorId(long kitDescriptorId) throws IOException;
+  public Collection<KitDescriptor> listKitDescriptorsByManufacturer(String manufacturer) throws IOException;
+  public Collection<KitDescriptor> listKitDescriptorsByPlatform(PlatformType platformType) throws IOException;
+  public Collection<KitDescriptor> listKitDescriptorsByUnits(String units) throws IOException;
   public Collection<KitDescriptor> listKitDescriptorsByType(KitType kitType) throws IOException;
   public Collection<KitDescriptor> listAllKitDescriptors() throws IOException;
 

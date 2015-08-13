@@ -50,6 +50,9 @@ public class DaoUtils {
     SQLExperimentDAO experimentDAO;
     SQLLibraryDAO libraryDAO;
     SQLLibraryQCDAO libraryQcDAO;
+    SQLKitDescriptorDAO kitDescriptorDAO;
+    SQLKitComponentDAO kitComponentDAO;
+    SQLKitComponentDescriptorDAO kitComponentDescriptorDAO;
     SQLNoteDAO noteDAO;
     SQLSequencerPoolPartitionDAO partitionDAO;
     SQLPlatformDAO platformDAO;
@@ -65,7 +68,6 @@ public class DaoUtils {
     SQLStatusDAO statusDAO;
     SQLStudyDAO studyDAO;
     SQLTgacSubmissionDAO submissionDAO;
-    SQLKitDAO kitDAO;
 
     DataObjectFactory dataObjectFactory = new TgacDataObjectFactory();
 
@@ -78,7 +80,9 @@ public class DaoUtils {
     libraryDilutionDAO = new SQLLibraryDilutionDAO();
     emPCRDAO = new SQLEmPCRDAO();
     experimentDAO = new SQLExperimentDAO();
-    kitDAO = new SQLKitDAO();
+    kitComponentDAO = new SQLKitComponentDAO();
+    kitComponentDescriptorDAO = new SQLKitComponentDescriptorDAO();
+    kitDescriptorDAO = new SQLKitDescriptorDAO();
     libraryDAO = new SQLLibraryDAO();
     libraryQcDAO = new SQLLibraryQCDAO();
     noteDAO = new SQLNoteDAO();
@@ -130,7 +134,7 @@ public class DaoUtils {
     experimentDAO.setStudyDAO(studyDAO);
     experimentDAO.setCascadeType(CascadeType.PERSIST);
     experimentDAO.setDataObjectFactory(dataObjectFactory);
-    experimentDAO.setKitDAO(kitDAO);
+    experimentDAO.setKitComponentDAO(kitComponentDAO);
 
     sequencerPartitionContainerDAO.setJdbcTemplate(jt);
     sequencerPartitionContainerDAO.setSecurityProfileDAO(securityProfileDAO);
@@ -138,10 +142,21 @@ public class DaoUtils {
     sequencerPartitionContainerDAO.setCascadeType(CascadeType.PERSIST);
     sequencerPartitionContainerDAO.setDataObjectFactory(dataObjectFactory);
 
-    kitDAO.setJdbcTemplate(jt);
-    kitDAO.setNoteDAO(noteDAO);
-    kitDAO.setCascadeType(CascadeType.PERSIST);
-    kitDAO.setDataObjectFactory(dataObjectFactory);
+    kitDescriptorDAO.setJdbcTemplate(jt);
+    kitDescriptorDAO.setNoteDAO(noteDAO);
+    kitDescriptorDAO.setCascadeType(CascadeType.PERSIST);
+    kitDescriptorDAO.setDataObjectFactory(dataObjectFactory);
+
+    kitComponentDescriptorDAO.setJdbcTemplate(jt);
+    kitComponentDescriptorDAO.setCascadeType(CascadeType.PERSIST);
+    kitComponentDescriptorDAO.setDataObjectFactory(dataObjectFactory);
+    kitComponentDescriptorDAO.setKitDescriptorDAO(kitDescriptorDAO);
+
+    kitComponentDAO.setJdbcTemplate(jt);
+    kitComponentDAO.setNoteDAO(noteDAO);
+    kitComponentDAO.setCascadeType(CascadeType.PERSIST);
+    kitComponentDAO.setDataObjectFactory(dataObjectFactory);
+    kitComponentDAO.setKitComponentDescriptorDAO(kitComponentDescriptorDAO);
 
     partitionDAO.setJdbcTemplate(jt);
     partitionDAO.setSecurityProfileDAO(securityProfileDAO);
@@ -184,7 +199,6 @@ public class DaoUtils {
 
     runDAO.setJdbcTemplate(jt);
     runDAO.setSecurityProfileDAO(securityProfileDAO);
-    //runDAO.setFlowcellDAO(flowcellDAO);
     runDAO.setSequencerPartitionContainerDAO(sequencerPartitionContainerDAO);
     runDAO.setSequencerReferenceDAO(sequencerReferenceDAO);
     runDAO.setStatusDAO(statusDAO);
@@ -233,7 +247,9 @@ public class DaoUtils {
     requestManager.setLibraryDilutionStore(libraryDilutionDAO);
     requestManager.setEmPCRStore(emPCRDAO);
     requestManager.setExperimentStore(experimentDAO);
-    requestManager.setKitStore(kitDAO);
+    requestManager.setKitComponentStore(kitComponentDAO);
+    requestManager.setKitComponentDescriptorStore(kitComponentDescriptorDAO);
+    requestManager.setKitDescriptorStore(kitDescriptorDAO);
     requestManager.setLibraryQcStore(libraryQcDAO);
     requestManager.setLibraryStore(libraryDAO);
     requestManager.setNoteStore(noteDAO);

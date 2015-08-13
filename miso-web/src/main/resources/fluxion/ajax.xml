@@ -147,5 +147,10 @@
           class="uk.ac.bbsrc.tgac.miso.spring.ajax.ImportExportControllerHelperService">
     </bean>
 
+    <bean
+        id="kitComponentControllerHelperService"
+        class="uk.ac.bbsrc.tgac.miso.spring.ajax.KitComponentControllerHelperService">
+    </bean>
+
 </beans>
 

@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enum representing all potential Kit types
+ * Enum representing all potential KitComponent types
  *
  * @author Rob Davey
  * @since 0.0.2

@@ -421,6 +421,18 @@ public class IlluminaNotificationMessageConsumerMechanism implements Notificatio
               }
             }
 
+            // manage kits
+            // prepare for kit merge
+            if (run.has("kits")) {
+              JSONArray kits = run.getJSONArray("kits");
+              for (String kitBarcode : (Iterable<String>) kits) {
+                if (!"".equals(kitBarcode)) {
+                  //lookup barcode
+                  KitComponent k = requestManager.getKitComponentByIdentificationBarcode(kitBarcode);
+                }
+              }
+            }
+
             updatedRuns.put(r.getAlias(), r);
             runsToSave.add(r);
           }

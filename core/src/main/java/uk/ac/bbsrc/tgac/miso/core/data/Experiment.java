@@ -214,32 +214,32 @@ public interface Experiment extends SecurableByProfile, Submittable<Document>, C
   public Pool<? extends Poolable> getPool();
 
   /**
-   * Sets the kits of this Experiment object.
+   * Sets the kitComponents of this Experiment object.
    *
-   * @param kits kits.
+   * @param kitComponents kitComponents.
    */
-  public void setKits(Collection<Kit> kits);
+  public void setKitComponents(Collection<KitComponent> kitComponents);
 
   /**
-   * Add a Kit to this Experiment object
+   * Add a KitComponent to this Experiment object
    *
-   * @param kit of type Kit
+   * @param kitComponent of type KitComponent
    */
-  public void addKit(Kit kit);
+  public void addKit(KitComponent kitComponent);
 
   /**
    * Returns the kits used to construct this Experiment object.
    *
-   * @return Collection<Kit> kits.
+   * @return Collection<KitComponent> kits.
    */
-  public Collection<Kit> getKits();
+  public Collection<KitComponent> getKitComponents();
 
   /**
    * Return kits used within this experiment of a given KitType
    *
    * @param kitType of type KitType
-   * @return Collection<Kit>
+   * @return Collection<KitComponent>
    */
   @JsonIgnore
-  public Collection<Kit> getKitsByKitType(KitType kitType);
+  public Collection<KitComponent> getKitsByKitType(KitType kitType);
 }
